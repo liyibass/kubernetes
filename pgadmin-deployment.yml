@@ -17,7 +17,7 @@ data:
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: pgadmin-statefulSet
+  name: pgadmin
 spec:
   serviceName: pgadmin-service
   podManagementPolicy: Parallel
