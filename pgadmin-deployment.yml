@@ -1,0 +1,78 @@
+# pgadmin
+kind: Secret
+apiVersion: v1
+type: Opaque
+metadata:
+  name: pgadmin-secret
+data:
+  pgadmin-password: V2VsY29tZTEK
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: pgadmin-config
+data:
+  PGADMIN_DEFAULT_EMAIL: liyibass@gmail.com
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: pgadmin-deployment
+spec:
+  serviceName: pgadmin-service
+  podManagementPolicy: Parallel
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: pgadmin
+          image: dpage/pgadmin4:5.4
+          imagePullPolicy: Always
+          env:
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-secret
+                  key: pgadmin-password
+          envFrom:
+            - configMapRef:
+                name: pgadmin-config
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: pgadmin-volume
+              mountPath: /var/lib/pgadmin
+          resources:
+            requests:
+              cpu: 200m
+              memory: 400Mi
+            limits:
+              cpu: 400m
+              memory: 400Mi
+      volumes:
+        - name: pgadmin-volume
+          emptyDir: {}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: pgadmin-service
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+  selector:
+    app: pgadmin
+  type: NodePort
