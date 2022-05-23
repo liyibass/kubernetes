@@ -1,14 +1,14 @@
 # postgres
-kind: Secret
 apiVersion: v1
+kind: Secret
 type: Opaque
 metadata:
   name: postgres-secret
 data:
   postgres-password: V2VsY29tZTEK
 ---
-kind: ConfigMap
 apiVersion: v1
+kind: ConfigMap
 metadata:
   name: postgres-config
   labels:
@@ -18,8 +18,8 @@ data:
   PGDATA: /data/postgres
   POSTGRES_USER: liyi
 ---
-kind: PersistentVolume
 apiVersion: v1
+kind: PersistentVolume
 metadata:
   name: postgres-pv-volume
   labels:
@@ -34,8 +34,8 @@ spec:
   hostPath:
     path: "/mnt/data"
 ---
-kind: PersistentVolumeClaim
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: postgres-pv-claim
   labels:
@@ -48,8 +48,8 @@ spec:
     requests:
       storage: 5Gi
 ---
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: postgres-deployment
 spec:
@@ -92,8 +92,8 @@ spec:
           persistentVolumeClaim:
             claimName: postgres-pv-claim
 ---
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name: postgres-service
   labels:
@@ -102,5 +102,7 @@ spec:
   type: NodePort
   ports:
     - port: 5432
+      nodePort: 30000
+      targetPort: 5432
   selector:
     app: postgres
