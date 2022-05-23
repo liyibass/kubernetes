@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: pgadmin
+  name: pgadmin-secret
   labels:
     app: pgadmin
 type: Opaque
@@ -12,14 +12,14 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: pgadmin
+  name: pgadmin-config
 data:
   PGADMIN_DEFAULT_EMAIL: liyibass@gmail.com
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pgadmin
+  name: pgadmin-deployment
   labels:
     app: pgadmin
 spec:
@@ -38,12 +38,12 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: pgadmin
+                name: pgadmin-config
           env:
             - name: PGADMIN_DEFAULT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pgadmin
+                  name: pgadmin-secret
                   key: pgadmin-password
           ports:
             - name: http
@@ -65,7 +65,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pgadmin
+  name: pgadmin-service
   labels:
     app: pgadmin
 spec:

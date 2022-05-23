@@ -5,7 +5,7 @@ type: Opaque
 metadata:
   name: postgres-secret
 data:
-  postgres-password: V2VsY29tZTEK
+  postgres-password: V2VsY29tZTE=
 ---
 apiVersion: v1
 kind: ConfigMap
