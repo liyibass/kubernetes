@@ -53,7 +53,6 @@ spec:
           volumeMounts:
             - name: pgadmin-volume
               mountPath: /var/lib/pgadmin
-
           resources:
             requests:
               cpu: 200m
@@ -64,6 +63,11 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: pgadmin-volume
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
 ---
 kind: Service
 apiVersion: v1
